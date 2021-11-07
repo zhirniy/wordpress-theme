@@ -25,4 +25,40 @@ class ZhTheme
         return $this;
     }
 
+    private function actionAfterSetup($function)
+    {
+        add_action('after_setup_theme', function() use ($function) {
+            $function();
+        });
+    }
+
+    private function addSupportWithoutParams($option)
+    {
+        add_theme_support($option);
+    }
+
+    private function addSupportWithParams($option, array $place)
+    {
+        add_theme_support($option, $place);
+    }
+
+    public function addSupport($option, array $place = null)
+    {
+        $this->actionAfterSetup(function() use ($option, $place) {
+            if($place){
+                $this->addSupportWithParams($option, $place);
+            }else{
+                $this->addSupportWithoutParams($option);
+            }
+        });
+        return $this;
+    }
+
+    public function addNavMenus($locations = array())
+    {
+        $this->actionAfterSetup(function() use ($locations){
+            register_nav_menus($locations);
+        });
+    }
+
 }
